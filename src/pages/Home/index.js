@@ -1,5 +1,6 @@
 /* eslint-disable eslint-comments/no-unlimited-disable */
 import React, {useEffect, useRef, useState} from 'react';
+import {API_KEY} from '@env';
 import {
   FlatList,
   Modal,
@@ -17,6 +18,7 @@ import api from '../../services/api';
 import PageHeader from '../../components/PageHeader';
 import {category, hp2, year} from '../../utils/Lists';
 import EmptyList from '../../components/EmptyList';
+import {useSelector} from 'react-redux';
 const {width: SCREEN_WIDTH, height: SCREEN_HEIGHT} = Dimensions.get('screen');
 const Home = ({navigation}) => {
   const [books, setBooks] = useState([]);
@@ -29,6 +31,8 @@ const Home = ({navigation}) => {
   const [loadingMore, setLoadingMore] = useState(false);
   const flatListRef = useRef();
   const flatListOffsetRef = useRef();
+  const {bookList: GLOBAL_BOOKS} = useSelector(store => store.book);
+
   // const getBooksMemo = useMemo(() => getGoogleBooks, [search, page]);
   useEffect(() => {
     if (page === 0) {
@@ -40,33 +44,43 @@ const Home = ({navigation}) => {
   }, [page]); // eslint-disable-line
 
   const getGoogleBooks = async () => {
-    const _search = search || '';
+    const _search = search?.replace(' ', '_') || '';
     const _page = page || 0;
+    if (!_search) {
+      setBooks([]);
+      setPage(0);
+      return;
+    }
     await api
       .get(
-        `https://www.googleapis.com/books/v1/volumes?key=AIzaSyDEwkxVOINEaydVUIQckN3b1o5tTWL7wBs&q=${_search}&startIndex=${_page}&maxResults=20`,
+        `volumes?key=${API_KEY}&q=${_search}&startIndex=${_page}&maxResults=20`,
       )
       .then(response => {
-        console.log('NUMERO DE ITEMS', response.data.totalItems);
-        if (page === 0) {
+        // console.log('NUMERO DE ITEMS', response.data.totalItems);
+        if (_page === 0) {
           setBooks(response?.data?.items);
           setOriginalData(response?.data?.items);
-        } else {
-          console.log('adicionou mais items');
-          setBooks([...books, response?.data?.items]);
         }
-        if (page !== 0) {
-          const wait = new Promise(resolve => setTimeout(resolve, 10));
-          wait.then(() => {
-            flatListRef?.current.scrollToOffset({
-              animated: true,
-              offset: flatListOffsetRef.current - hp2(SCREEN_HEIGHT * 0.3),
-            });
-          });
+        if (_page > 0) {
+          console.log('adicionou mais items', response.config);
+          const newBooks = response?.data?.items ?? [];
+          console.log(newBooks.length);
+          setBooks([...books, ...newBooks]);
+          // setOriginalData([]);
         }
+        // if (_page !== 0) {
+        //   const wait = new Promise(resolve => setTimeout(resolve, 10));
+        //   wait.then(() => {
+        //     flatListRef?.current.scrollToOffset({
+        //       animated: true,
+        //       offset: flatListOffsetRef.current - hp2(SCREEN_HEIGHT * 0.3),
+        //     });
+        //   });
+        // }
       })
       .catch(err => {
         console.log(err);
+        console.log(err.errors);
       })
       .finally(() => {
         setLoadingMore(false);
@@ -93,22 +107,6 @@ const Home = ({navigation}) => {
     setYearSelected(arrSelected);
     console.log('yearSelected', yearSelected);
   }
-
-  const searchBookByTitle = text => {
-    let arr = originalData;
-    console.log(text);
-    setBooks(
-      arr.filter(
-        book =>
-          book.volumeInfo.title.toLowerCase().includes(text.toLowerCase()) ||
-          book.volumeInfo.publisher?.toLowerCase().includes(text.toLowerCase()),
-        // ||
-        // book.volumeInfo.authors
-        //   .filter(author => author.toLowerCase() === text.toLowerCase())
-        //   .includes(text.toLowerCase()),
-      ),
-    );
-  };
 
   const ButtonOptionYear = () => {
     return year.map((item, index) => (
@@ -148,6 +146,7 @@ const Home = ({navigation}) => {
           getGoogleBooks(search);
           Keyboard.dismiss();
         }}
+        isFavorite={GLOBAL_BOOKS.length > 0} // returns true if there is at least one book in the list
         setVisible={() => setModalVisible(true)}
       />
       <View style={styles.container}>
@@ -184,7 +183,7 @@ const Home = ({navigation}) => {
               <EmptyList />
             </>
           )}
-          onEndReachedThreshold={0.7}
+          onEndReachedThreshold={0.5}
           onEndReached={() => {
             setPage(page + 1);
             setLoadingMore(true);

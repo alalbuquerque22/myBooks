@@ -24,19 +24,13 @@ const Book = ({navigation, route}) => {
 
   const {bookList: GLOBAL_BOOKS} = useSelector(store => store.book);
   useEffect(() => {
-    console.log(
-      'bookLIST',
-      GLOBAL_BOOKS?.filter?.(item => item.id === book.id),
-    );
     let favorited = GLOBAL_BOOKS?.filter?.(item => item.id === book.id) || [];
     setFavorite(favorited.length > 0);
   }, []); //eslint-disable-line
 
   const handleFavorite = () => {
     setFavorite(!isFavorite);
-    console.log('FAVORITING', book);
     if (!isFavorite) {
-      // let newList = {GLOBAL_BOOKS, book: book};
       dispatch(setBookList([...GLOBAL_BOOKS, book]));
     } else {
       let removedBook = GLOBAL_BOOKS.filter(item => item.id !== book.id);
@@ -55,7 +49,6 @@ const Book = ({navigation, route}) => {
               style={[
                 styles.row,
                 {
-                  marginTop: height * 0.02,
                   height: height * 0.1,
                   width: width,
                   marginBottom: height * 0.01,

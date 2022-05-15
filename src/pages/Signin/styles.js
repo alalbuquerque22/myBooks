@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     width: width * 0.9,
     height: width * 0.2,
     borderRadius: 8,
-    backgroundColor: 'rgba(255,255,255,0.50)',
+    backgroundColor: 'rgba(255,255,255,0.60)',
   },
   label: {
     fontFamily: 'Heebo_300Light',
@@ -55,7 +55,8 @@ const styles = StyleSheet.create({
     marginLeft: width * 0.05,
     marginTop: width * 0.02,
 
-    color: '#fff',
+    color: '#000',
+    fontSize: width * 0.05,
     fontFamily: 'Heebo_400Regular',
   },
   boxButton: {
@@ -71,7 +72,7 @@ const styles = StyleSheet.create({
   button: {
     width: width * 0.3,
     height: width * 0.14,
-    backgroundColor: '#fff',
+    backgroundColor: '#ffffff',
     borderRadius: width * 0.15,
     justifyContent: 'center',
     alignItems: 'center',
