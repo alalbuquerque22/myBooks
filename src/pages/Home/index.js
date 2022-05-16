@@ -44,8 +44,9 @@ const Home = ({navigation}) => {
   }, [page]); // eslint-disable-line
 
   const getGoogleBooks = async () => {
+    const MAX_RESULTS_PER_PAGE = 20;
     const _search = search?.replace(' ', '_') || '';
-    const _page = page || 0;
+    const _page = page * MAX_RESULTS_PER_PAGE || 0;
     if (!_search) {
       setBooks([]);
       setPage(0);
@@ -53,7 +54,7 @@ const Home = ({navigation}) => {
     }
     await api
       .get(
-        `volumes?key=${API_KEY}&q=${_search}&startIndex=${_page}&maxResults=20`,
+        `volumes?key=${API_KEY}&q=${_search}&startIndex=${_page}&maxResults=${MAX_RESULTS_PER_PAGE}`,
       )
       .then(response => {
         // console.log('NUMERO DE ITEMS', response.data.totalItems);
@@ -62,21 +63,25 @@ const Home = ({navigation}) => {
           setOriginalData(response?.data?.items);
         }
         if (_page > 0) {
-          console.log('adicionou mais items', response.config);
+         // console.log('adicionou mais items', response.config);
+          //console.log(newBooks.length);
+          // prevent clear array
           const newBooks = response?.data?.items ?? [];
-          console.log(newBooks.length);
-          setBooks([...books, ...newBooks]);
+          // set new array concated on the books
+          let temp = [...books,...newBooks]
+          setBooks(temp);
           // setOriginalData([]);
         }
-        // if (_page !== 0) {
-        //   const wait = new Promise(resolve => setTimeout(resolve, 10));
-        //   wait.then(() => {
-        //     flatListRef?.current.scrollToOffset({
-        //       animated: true,
-        //       offset: flatListOffsetRef.current - hp2(SCREEN_HEIGHT * 0.3),
-        //     });
-        //   });
-        // }
+        //up the list on put new items 
+        if (_page !== 0) {
+          const wait = new Promise(resolve => setTimeout(resolve, 10));
+          wait.then(() => {
+            flatListRef?.current.scrollToOffset({
+              animated: true,
+              offset: flatListOffsetRef.current - hp2(SCREEN_HEIGHT * 0.1),
+            });
+          });
+        }
       })
       .catch(err => {
         console.log(err);
