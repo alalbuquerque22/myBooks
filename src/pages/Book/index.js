@@ -68,7 +68,7 @@ const Book = ({navigation, route}) => {
                   <Icon
                     name={isFavorite ? 'ios-heart-sharp' : 'ios-heart-outline'}
                     size={30}
-                    color={isFavorite ? 'red' : 'black'}
+                    color={isFavorite ? '#ff1616' : 'black'}
                   />
                 </TouchableOpacity>
               </View>

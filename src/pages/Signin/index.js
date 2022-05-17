@@ -1,4 +1,4 @@
-import React, {createRef, useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {
   ImageBackground,
   SafeAreaView,
@@ -17,6 +17,9 @@ import background from '../../assets/background.jpg';
 import logo from '../../assets/Logo.png';
 import {useNavigation} from '@react-navigation/native';
 import api from '../../services/api';
+import auth from '@react-native-firebase/auth';
+import Icon from 'react-native-vector-icons/Ionicons';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
 const SignIn = ({navigation}) => {
   const {navigate} = useNavigation();
 
@@ -24,7 +27,7 @@ const SignIn = ({navigation}) => {
     email: '',
     password: '',
   });
-  const passwordRef = createRef();
+  const passwordRef = useRef();
   const login = async () => {
     await api
       .post('auth/sign-in', data, {
@@ -43,6 +46,24 @@ const SignIn = ({navigation}) => {
         console.log('Error', error);
       });
   };
+
+  React.useEffect(() => {
+    GoogleSignin.configure({
+      webClientId:
+        '417535255104-8v63p5jtfve4urqjdrs0b0v027pui2or.apps.googleusercontent.com',
+    });
+  }, []);
+
+  async function googleLogin() {
+    //get user id
+    const {idToken} = await GoogleSignin.signIn();
+
+    //create a google credential with user id
+    const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+
+    // Sign-in the user with the credential
+    return auth().signInWithCredential(googleCredential);
+  }
   return (
     <ImageBackground
       // source={background}
@@ -52,10 +73,10 @@ const SignIn = ({navigation}) => {
       style={styles.content}
       resizeMode="cover">
       <SafeAreaView style={{flex: 1}}>
-        <ScrollView>
-          <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            style={{flex: 1}}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={{flex: 1}}>
+          <ScrollView style={{flex: 1}}>
             <View style={styles.container}>
               <View style={styles.contentGlobal} />
               <View style={styles.logoContent}>
@@ -99,16 +120,39 @@ const SignIn = ({navigation}) => {
                   />
                   <View style={styles.boxButton}>
                     <TouchableOpacity
-                      onPress={() => navigation.replace('Home')}
+                      onPress={() => {
+                        navigation.replace('Home');
+                      }}
                       style={styles.button}>
                       <Text style={styles.buttonText}>Entrar</Text>
                     </TouchableOpacity>
                   </View>
                 </View>
+                <TouchableOpacity
+                  onPress={() => {
+                    googleLogin()
+                      .then(() => {
+                        navigation.replace('Home');
+                      })
+                      .catch(err => {
+                        alert(err.message);
+                      });
+                  }}>
+                  <View style={[styles.socialInput]}>
+                    <Icon name="md-logo-google" size={35} color="#000" />
+                    <Text
+                      style={[
+                        styles.buttonText,
+                        {color: '#000', fontWeight: '800'},
+                      ]}>
+                      Google Sign In{' '}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
               </View>
             </View>
-          </KeyboardAvoidingView>
-        </ScrollView>
+          </ScrollView>
+        </KeyboardAvoidingView>
       </SafeAreaView>
     </ImageBackground>
   );

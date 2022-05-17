@@ -19,6 +19,7 @@ const PageHeader = ({
   isFavorite = false,
   setTitle,
   showIconFavorite = true,
+  _onPressIconFavorite = () => {},
   showIconGoBack = false,
   hiddenIconHamburger = false,
 }) => {
@@ -38,12 +39,12 @@ const PageHeader = ({
               <View style={[styles.iconLogout, {marginRight: 10}]}>
                 <TouchableOpacity
                   onPress={() => {
-                    navigation.navigate('Favorites');
+                    _onPressIconFavorite();
                   }}>
                   <Icon
                     name="favorite"
                     size={24}
-                    color={isFavorite ? '#fc0345' : '#ACACAC'}
+                    color={isFavorite ? '#ff1616' : '#ACACAC'}
                   />
                 </TouchableOpacity>
               </View>

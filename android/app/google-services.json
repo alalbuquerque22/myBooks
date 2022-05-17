@@ -1,0 +1,63 @@
+{
+  "project_info": {
+    "project_number": "417535255104",
+    "project_id": "ibmbookprojec",
+    "storage_bucket": "ibmbookprojec.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:417535255104:android:9083df150d420951d375a5",
+        "android_client_info": {
+          "package_name": "com.mygooglebooks"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "417535255104-7iauii6f4fun79s5lj7eomrdq3nu33ct.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mygooglebooks",
+            "certificate_hash": "94a4b0865c5e7b49bbf12644706a763ddafaaef7"
+          }
+        },
+        {
+          "client_id": "417535255104-qj9sem8muolacf0s7p2ub7b8s24g3bbq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mygooglebooks",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "417535255104-ta708obud6t3s2ctj0lb7d2mblsvbppv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mygooglebooks",
+            "certificate_hash": "f9e8bd9cab44e781c9af446e569b86edb207d2be"
+          }
+        },
+        {
+          "client_id": "417535255104-8v63p5jtfve4urqjdrs0b0v027pui2or.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZylQjvJuVl2wMQ7Pu3c5Hp68PahOJzYU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "417535255104-8v63p5jtfve4urqjdrs0b0v027pui2or.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

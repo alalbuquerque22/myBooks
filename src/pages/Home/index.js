@@ -18,7 +18,8 @@ import api from '../../services/api';
 import PageHeader from '../../components/PageHeader';
 import {category, hp2, year} from '../../utils/Lists';
 import EmptyList from '../../components/EmptyList';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import {setBookList} from '../../redux-store/modules/books/actions';
 const {width: SCREEN_WIDTH, height: SCREEN_HEIGHT} = Dimensions.get('screen');
 const Home = ({navigation}) => {
   const [books, setBooks] = useState([]);
@@ -31,6 +32,7 @@ const Home = ({navigation}) => {
   const [loadingMore, setLoadingMore] = useState(false);
   const flatListRef = useRef();
   const flatListOffsetRef = useRef();
+  const dispatch = useDispatch();
   const {bookList: GLOBAL_BOOKS} = useSelector(store => store.book);
 
   // const getBooksMemo = useMemo(() => getGoogleBooks, [search, page]);
@@ -63,16 +65,16 @@ const Home = ({navigation}) => {
           setOriginalData(response?.data?.items);
         }
         if (_page > 0) {
-         // console.log('adicionou mais items', response.config);
+          // console.log('adicionou mais items', response.config);
           //console.log(newBooks.length);
           // prevent clear array
           const newBooks = response?.data?.items ?? [];
           // set new array concated on the books
-          let temp = [...books,...newBooks]
+          let temp = [...books, ...newBooks];
           setBooks(temp);
           // setOriginalData([]);
         }
-        //up the list on put new items 
+        //up the list on put new items
         if (_page !== 0) {
           const wait = new Promise(resolve => setTimeout(resolve, 10));
           wait.then(() => {
@@ -146,7 +148,7 @@ const Home = ({navigation}) => {
       <PageHeader
         search={search}
         setSearch={text => setSearch(text)}
-        // _searchBookByTitle={searchBookByTitle()}
+        _onPressIconFavorite={() => navigation.navigate('Favorites')}
         _onPressEnter={() => {
           getGoogleBooks(search);
           Keyboard.dismiss();
@@ -159,7 +161,7 @@ const Home = ({navigation}) => {
           data={books}
           ref={flatListRef}
           onScroll={handleScroll}
-          keyExtractor={item => item?.id}
+          keyExtractor={item => `${item?.id}.${item?.volumeInfo?.title}`}
           horizontal={false}
           contentContainerStyle={{paddingBottom: 20}}
           showsVerticalScrollIndicator={false}
@@ -174,6 +176,20 @@ const Home = ({navigation}) => {
                 publisher={item?.volumeInfo?.publisher}
                 published={item?.volumeInfo?.publishedDate}
                 object={item}
+                showFavoriteButton
+                isFavorited={
+                  GLOBAL_BOOKS.findIndex(i => i.id === item.id) !== -1
+                }
+                _onPressFavorite={() => {
+                  if (GLOBAL_BOOKS.findIndex(i => i.id === item.id) === -1) {
+                    dispatch(setBookList([...GLOBAL_BOOKS, item]));
+                  } else {
+                    let removedBook = GLOBAL_BOOKS.filter(
+                      i => i.id !== item.id,
+                    );
+                    dispatch(setBookList(removedBook));
+                  }
+                }}
               />
             </>
           )}

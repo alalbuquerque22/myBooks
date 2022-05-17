@@ -44,9 +44,20 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: 'rgba(255,255,255,0.60)',
   },
+  socialInput: {
+    marginTop: width * 0.1,
+    width: width * 0.9,
+    height: width * 0.15,
+    borderRadius: 8,
+    backgroundColor: 'rgba(255,255,255,0.9)',
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+  },
   label: {
     fontFamily: 'Heebo_300Light',
     color: '#000',
+    fontWeight: '700',
     fontSize: width * 0.04,
     marginLeft: width * 0.05,
     marginTop: width * 0.02,
@@ -81,6 +92,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Heebo_400Regular',
     fontSize: width * 0.06,
     color: '#707070',
+    fontWeight: '600',
   },
 });
 

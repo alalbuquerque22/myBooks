@@ -1,18 +1,22 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useEffect, useState} from 'react';
 
-import {View, Text, Keyboard, FlatList} from 'react-native';
+import {View, Dimensions, Keyboard, FlatList} from 'react-native';
 // import {FlatList} from 'react-native-gesture-handler';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useSelector} from 'react-redux';
 import CardBook from '../../components/CardBook';
 import PageHeader from '../../components/PageHeader';
 import styles from './styles';
+const HEIGHT_SCREEN = Dimensions.get('screen').height;
 const Favorite = ({navigation}) => {
   const {bookList: GLOBAL_BOOKS} = useSelector(store => store.book);
   const [search, setSearch] = useState('');
   const [books, setBooks] = useState(GLOBAL_BOOKS);
 
+  useEffect(() => {
+    setBooks(GLOBAL_BOOKS);
+  }, [GLOBAL_BOOKS]);
   useEffect(() => {
     searchBookByTitle(search);
   }, [search]);
@@ -50,9 +54,9 @@ const Favorite = ({navigation}) => {
         <View>
           <FlatList
             data={books}
-            keyExtractor={item => item?.id}
+            keyExtractor={item => `${item?.id}.${item?.volumeInfo?.title}`}
             horizontal={false}
-            contentContainerStyle={{paddingBottom: 20}}
+            contentContainerStyle={{paddingBottom: HEIGHT_SCREEN * 0.3}}
             showsVerticalScrollIndicator={false}
             renderItem={({item}) => (
               <>
