@@ -15,19 +15,17 @@ import {
 import styles from './styles';
 import background from '../../assets/background.jpg';
 import logo from '../../assets/Logo.png';
-import {useNavigation} from '@react-navigation/native';
 import api from '../../services/api';
 import auth from '@react-native-firebase/auth';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 const SignIn = ({navigation}) => {
-  const {navigate} = useNavigation();
-
   const [data, setData] = useState({
     email: '',
     password: '',
   });
   const passwordRef = useRef();
+  //login desativado
   const login = async () => {
     await api
       .post('auth/sign-in', data, {

@@ -2,7 +2,6 @@ import {combineReducers} from 'redux';
 
 // import user from './user/reducer';
 // import ad from './ad/reducer';
-import radar from './radar/reducer';
 import book from './books/reducer';
 // import invite from './invite/reducer';
 // import config from './config/reducer';
@@ -16,7 +15,6 @@ import book from './books/reducer';
 export default combineReducers({
   // user,
   // ad,
-  radar,
   book,
   // spotlights,
   // invite,
