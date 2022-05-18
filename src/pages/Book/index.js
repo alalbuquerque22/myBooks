@@ -1,6 +1,6 @@
 /* eslint-disable eslint-comments/no-unlimited-disable */
 
-import React, {useEffect} from 'react';
+import React, {useEffect, useRef} from 'react';
 import {
   Dimensions,
   Image,
@@ -16,14 +16,16 @@ import {TouchableOpacity} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {setBookList} from '../../redux-store/modules/books/actions';
 import {SharedElement} from 'react-native-shared-element';
+import * as Animatable from 'react-native-animatable';
 
 const Book = ({navigation, route}) => {
-  console.log('ROUTE do BOOK', route.params);
-  const {width, height} = Dimensions.get('window');
+  const imageRef = useRef();
+  const textRef = useRef();
   const dispatch = useDispatch();
-  let book = route.params.object || {};
   const [isFavorite, setFavorite] = React.useState(false);
+  const {width, height} = Dimensions.get('window');
 
+  let book = route.params.object || {};
   const {bookList: GLOBAL_BOOKS} = useSelector(store => store.book);
   useEffect(() => {
     let favorited = GLOBAL_BOOKS?.filter?.(item => item.id === book.id) || [];
@@ -57,7 +59,15 @@ const Book = ({navigation, route}) => {
                 },
               ]}>
               <View style={styles.buttonBack}>
-                <TouchableOpacity onPress={() => navigation.goBack()}>
+                <TouchableOpacity
+                  onPress={() => {
+                    Promise.all([
+                      imageRef.current.fadeOut(500),
+                      textRef.current.fadeOut(500),
+                    ]).then(() => {
+                      navigation.goBack();
+                    });
+                  }}>
                   <Icon name="arrow-back-sharp" size={30} color="black" />
                 </TouchableOpacity>
               </View>
@@ -75,7 +85,12 @@ const Book = ({navigation, route}) => {
                 </TouchableOpacity>
               </View>
             </View>
-            <View style={styles.imageBox}>
+            <Animatable.View
+              ref={imageRef}
+              animation="zoomIn"
+              duration={500}
+              delay={700}
+              style={styles.imageBox}>
               <SharedElement id={`item.${book?.id}.image`} style={styles.image}>
                 <Image
                   style={styles.image}
@@ -96,8 +111,13 @@ const Book = ({navigation, route}) => {
                 resizeMode="stretch"
                 style={styles.image}
               /> */}
-            </View>
-            <View style={[styles.informationCard, {marginTop: height * 0.03}]}>
+            </Animatable.View>
+            <Animatable.View
+              ref={textRef}
+              animation="fadeInRight"
+              duration={500}
+              delay={700}
+              style={[styles.informationCard, {marginTop: height * 0.03}]}>
               <SharedElement
                 id={`item.${book?.volumeInfo?.title}.title`}
                 style={styles.title}>
@@ -114,7 +134,7 @@ const Book = ({navigation, route}) => {
               <Text style={styles.subTitle}>
                 {/* {author.map(author => author).join(', ')} */}
               </Text>
-            </View>
+            </Animatable.View>
 
             <View style={[styles.informationCard]}>
               <Text

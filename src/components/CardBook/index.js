@@ -3,20 +3,9 @@ import React from 'react';
 import {Image, Text, View, TouchableOpacity} from 'react-native';
 import styles from './styles';
 import Icon from 'react-native-vector-icons/Ionicons';
+import * as Animatable from 'react-native-animatable';
 import {SharedElement} from 'react-native-shared-element';
 
-// export interface Book {
-//     id: string,
-//     authors: string,
-//     title: string,
-//     imageUrl: string,
-//     publisher: string,
-//     pageCount: number,
-//     published: number
-// }
-// interface BookItemProps {
-//     book: Book
-// }
 const CardBook = ({
   id,
   imageUrl,
@@ -30,8 +19,10 @@ const CardBook = ({
   _onPressFavorite = () => {},
   object,
 }) => {
+  const textRef = React.useRef();
+  const imageRef = React.useRef();
   const {navigate} = useNavigation();
-  console.log('RIYTE', id);
+
   return (
     <TouchableOpacity
       activeOpacity={0.8}
@@ -46,7 +37,12 @@ const CardBook = ({
       <View style={styles.content}>
         <View style={styles.card}>
           <View style={styles.cardContent}>
-            <View style={styles.cardImage}>
+            <Animatable.View
+              ref={imageRef}
+              animation="fadeInLeft"
+              duration={500}
+              delay={700}
+              style={styles.cardImage}>
               <SharedElement id={`item.${id}.image`} style={styles.image}>
                 <Image
                   style={styles.image}
@@ -58,8 +54,13 @@ const CardBook = ({
                   resizeMode="cover"
                 />
               </SharedElement>
-            </View>
-            <View style={styles.cardText}>
+            </Animatable.View>
+            <Animatable.View
+              ref={textRef}
+              animation="fadeInRight"
+              duration={500}
+              delay={700}
+              style={styles.cardText}>
               <SharedElement
                 id={`item.${title}.title`}
                 style={styles.cardTitle}>
@@ -78,7 +79,7 @@ const CardBook = ({
                 {publisher ? publisher + ' \n' : ''}
                 {published ? 'Publicado em ' + published : ''}
               </Text>
-            </View>
+            </Animatable.View>
             {showFavoriteButton && (
               <View style={styles.favoriteButton}>
                 <TouchableOpacity onPress={() => _onPressFavorite()}>
