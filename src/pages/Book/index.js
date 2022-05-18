@@ -15,8 +15,10 @@ import styles from './styles';
 import {TouchableOpacity} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {setBookList} from '../../redux-store/modules/books/actions';
+import {SharedElement} from 'react-native-shared-element';
 
 const Book = ({navigation, route}) => {
+  console.log('ROUTE do BOOK', route.params);
   const {width, height} = Dimensions.get('window');
   const dispatch = useDispatch();
   let book = route.params.object || {};
@@ -74,7 +76,18 @@ const Book = ({navigation, route}) => {
               </View>
             </View>
             <View style={styles.imageBox}>
-              <Image
+              <SharedElement id={`item.${book?.id}.image`} style={styles.image}>
+                <Image
+                  style={styles.image}
+                  source={{
+                    uri:
+                      book?.volumeInfo?.imageLinks?.thumbnail ??
+                      'https://www.forewordreviews.com/books/covers/networking-for-people-who-hate-networking.jpg',
+                  }}
+                  resizeMode="stretch"
+                />
+              </SharedElement>
+              {/* <Image
                 source={{
                   uri:
                     book?.volumeInfo?.imageLinks?.thumbnail ??
@@ -82,12 +95,22 @@ const Book = ({navigation, route}) => {
                 }}
                 resizeMode="stretch"
                 style={styles.image}
-              />
+              /> */}
             </View>
             <View style={[styles.informationCard, {marginTop: height * 0.03}]}>
-              <Text numberOfLines={2} adjustsFontSizeToFit style={styles.title}>
+              <SharedElement
+                id={`item.${book?.volumeInfo?.title}.title`}
+                style={styles.title}>
+                <Text
+                  numberOfLines={2}
+                  adjustsFontSizeToFit
+                  style={styles.title}>
+                  {book?.volumeInfo?.title}
+                </Text>
+              </SharedElement>
+              {/* <Text numberOfLines={2} adjustsFontSizeToFit style={styles.title}>
                 {book?.volumeInfo?.title}
-              </Text>
+              </Text> */}
               <Text style={styles.subTitle}>
                 {/* {author.map(author => author).join(', ')} */}
               </Text>
@@ -185,5 +208,13 @@ const Book = ({navigation, route}) => {
     </>
   );
 };
-
+Book.sharedElements = (route, otherRoute, showing) => {
+  const book = route.params.object;
+  return [
+    {id: `item.${book?.id}.image`},
+    {
+      id: `item.${book?.volumeInfo?.title}.title`,
+    },
+  ];
+};
 export default Book;

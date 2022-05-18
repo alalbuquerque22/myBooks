@@ -3,6 +3,7 @@ import React from 'react';
 import {Image, Text, View, TouchableOpacity} from 'react-native';
 import styles from './styles';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {SharedElement} from 'react-native-shared-element';
 
 // export interface Book {
 //     id: string,
@@ -30,7 +31,7 @@ const CardBook = ({
   object,
 }) => {
   const {navigate} = useNavigation();
-
+  console.log('RIYTE', id);
   return (
     <TouchableOpacity
       activeOpacity={0.8}
@@ -46,23 +47,29 @@ const CardBook = ({
         <View style={styles.card}>
           <View style={styles.cardContent}>
             <View style={styles.cardImage}>
-              <Image
-                style={styles.image}
-                source={{
-                  uri:
-                    imageUrl ??
-                    'https://www.forewordreviews.com/books/covers/networking-for-people-who-hate-networking.jpg',
-                }}
-                resizeMode="cover"
-              />
+              <SharedElement id={`item.${id}.image`} style={styles.image}>
+                <Image
+                  style={styles.image}
+                  source={{
+                    uri:
+                      imageUrl ??
+                      'https://www.forewordreviews.com/books/covers/networking-for-people-who-hate-networking.jpg',
+                  }}
+                  resizeMode="cover"
+                />
+              </SharedElement>
             </View>
             <View style={styles.cardText}>
-              <Text
-                numberOfLines={2}
-                // adjustsFontSizeToFit
+              <SharedElement
+                id={`item.${title}.title`}
                 style={styles.cardTitle}>
-                {title}
-              </Text>
+                <Text
+                  numberOfLines={2}
+                  // adjustsFontSizeToFit
+                  style={styles.cardTitle}>
+                  {title}
+                </Text>
+              </SharedElement>
               <Text numberOfLines={1} style={styles.cardAuthor}>
                 {authors[0]}
               </Text>
@@ -89,5 +96,14 @@ const CardBook = ({
     </TouchableOpacity>
   );
 };
-
+CardBook.sharedElements = (route, otherRoute, showing) => {
+  const {id, title} = route.params;
+  console.log('sharedElements', route.params);
+  return [
+    {id: `item.${id}.image`},
+    {
+      id: `item.${title}.title`,
+    },
+  ];
+};
 export default CardBook;

@@ -289,4 +289,5 @@ const Home = ({navigation}) => {
     </SafeAreaView>
   );
 };
+
 export default Home;
