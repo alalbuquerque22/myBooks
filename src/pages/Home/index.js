@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import * as Progress from 'react-native-progress';
 import styles from './styles';
+import ModalFilter from '../../components/ModalFilter';
 import CardBook from '../../components/CardBook';
 import api from '../../services/api';
 import PageHeader from '../../components/PageHeader';
@@ -26,8 +27,7 @@ const Home = ({navigation}) => {
   const [originalData, setOriginalData] = useState([]);
   const [page, setPage] = useState(0);
   const [modalVisible, setModalVisible] = useState(false);
-  const [selected, setSelected] = useState([]);
-  const [yearSelected, setYearSelected] = useState([]);
+
   const [search, setSearch] = useState('');
   const [loadingMore, setLoadingMore] = useState(false);
   const flatListRef = useRef();
@@ -93,53 +93,7 @@ const Home = ({navigation}) => {
         setLoadingMore(false);
       });
   };
-  function toggleSelection(item) {
-    let index = selected.findIndex(i => i === item);
-    let arrSelected = [...selected];
-    if (index !== -1) {
-      arrSelected.splice(index, 1);
-    } else {
-      arrSelected.push(item);
-    }
-    setSelected(arrSelected);
-  }
-  function toggleSelectionYear(item) {
-    let index = yearSelected.findIndex(i => i === item);
-    let arrSelected = [...yearSelected];
-    if (index !== -1) {
-      arrSelected.splice(index, 1);
-    } else {
-      arrSelected.push(item);
-    }
-    setYearSelected(arrSelected);
-    console.log('yearSelected', yearSelected);
-  }
 
-  const ButtonOptionYear = () => {
-    return year.map((item, index) => (
-      <>
-        <Pressable
-          key={index}
-          style={[
-            styles.button,
-            yearSelected?.findIndex(i => i === item) !== -1
-              ? styles.buttonSelected
-              : styles.buttonUnselected,
-          ]}
-          onPress={() => toggleSelectionYear(item)}>
-          <Text
-            style={[
-              styles.textStyle,
-              yearSelected?.findIndex(i => i === item) !== -1
-                ? null
-                : styles.textUnselected,
-            ]}>
-            {item}
-          </Text>
-        </Pressable>
-      </>
-    ));
-  };
   const handleScroll = event => {
     flatListOffsetRef.current = event.nativeEvent.contentOffset.y;
   };
@@ -219,72 +173,10 @@ const Home = ({navigation}) => {
             useNativeDriver
           />
         )}
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => {
-            setModalVisible(!modalVisible);
-          }}>
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <View>
-                <Text style={styles.modalText}>Selecione a categoria</Text>
-
-                <View style={styles.modalButtons}>
-                  {category.map((item, index) => (
-                    <>
-                      <Pressable
-                        key={index}
-                        style={[
-                          styles.button,
-                          selected?.findIndex(i => i === item) !== -1
-                            ? styles.buttonSelected
-                            : styles.buttonUnselected,
-                        ]}
-                        onPress={() => toggleSelection(item)}>
-                        <Text
-                          style={[
-                            styles.textStyle,
-                            selected?.findIndex(i => i === item) !== -1
-                              ? null
-                              : styles.textUnselected,
-                          ]}>
-                          {item}
-                        </Text>
-                      </Pressable>
-                    </>
-                  ))}
-                </View>
-              </View>
-              <View>
-                <Text style={styles.modalText}>Selecione o ano</Text>
-                <View style={styles.modalButtons}>
-                  <ButtonOptionYear />
-                </View>
-              </View>
-              <Pressable
-                style={[
-                  styles.button,
-                  {
-                    borderColor: '#B22E6F',
-                    borderWidth: 1,
-                    width: '25%',
-                    marginTop: 40,
-                    backgroundColor: '#FFF',
-                  },
-                ]}
-                onPress={() => {
-                  setModalVisible(!modalVisible);
-                  // getBooks();
-                }}>
-                <Text style={[styles.textStyle, {color: '#B22E6F'}]}>
-                  Filtrar
-                </Text>
-              </Pressable>
-            </View>
-          </View>
-        </Modal>
+        <ModalFilter
+          _Visible={modalVisible}
+          _setVisible={_ => setModalVisible(_)}
+        />
       </View>
     </SafeAreaView>
   );

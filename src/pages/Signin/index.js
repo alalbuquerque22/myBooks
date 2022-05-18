@@ -141,7 +141,7 @@ const SignIn = ({navigation}) => {
                     <Text
                       style={[
                         styles.buttonText,
-                        {color: '#000', fontWeight: '800'},
+                        {color: '#000', fontWeight: '700'},
                       ]}>
                       Google Sign In{' '}
                     </Text>

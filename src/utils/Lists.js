@@ -23,4 +23,4 @@ export function hp2(size) {
   return (porcetagem * SCREEN_HEIGHT) / 100;
 }
 
-export const year = ['2015', '2016', '2017', '2018', '2019', '2020', '2021'];
+export const year = Array.from({length: 10}, (v, k) => k + 2015);
